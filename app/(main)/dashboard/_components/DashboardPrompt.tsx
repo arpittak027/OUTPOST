@@ -53,42 +53,49 @@ export function DashboardPrompt() {
       <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">What are we planning today?</h2>
       <p className="mt-2 text-muted-foreground">Describe it, and the agent drafts the doc and the canvas for you.</p>
 
-      <div className="mx-auto mt-7 max-w-3xl rounded-3xl border border-white/12 bg-card/80 p-3 text-left shadow-2xl shadow-black/40 backdrop-blur transition focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10">
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          onKeyDown={submitOnEnter(handleSubmit)}
-          placeholder="e.g. Design the database for a food delivery app and document it"
-          rows={2}
-          disabled={busy}
-          autoFocus
-          className="field-sizing-content max-h-60 min-h-14 w-full resize-none bg-transparent px-2 pt-1 text-base leading-6 outline-none placeholder:text-muted-foreground/70"
-        />
-        <div className="mt-1 flex items-center justify-between gap-2 pl-2">
-          <span className="text-xs text-muted-foreground/70">Shift + Enter for a new line</span>
-          <div className="flex items-center gap-1.5">
-            <MicButton value={prompt} onChange={setPrompt} disabled={busy} className="rounded-full" />
-            <Button
-              size="icon"
-              onClick={handleSubmit}
-              disabled={!prompt.trim() || busy}
-              aria-label="Create workspace"
-              className="rounded-full shadow-lg shadow-primary/25"
-            >
-              <ArrowUp className="size-4" />
-            </Button>
+      <div className="mx-auto mt-7 max-w-3xl rounded-2xl border border-white/12 bg-[#14151c]/90 p-2 text-left shadow-2xl shadow-black/60 backdrop-blur-xl transition-all focus-within:border-amber-500/50 focus-within:ring-4 focus-within:ring-amber-500/10">
+        <div className="flex items-start gap-2.5 p-1.5">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 mt-0.5">
+            <span className="text-base font-bold">✦</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <textarea
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              onKeyDown={submitOnEnter(handleSubmit)}
+              placeholder="Map out our SaaS architecture, then write the spec..."
+              rows={2}
+              disabled={busy}
+              autoFocus
+              className="field-sizing-content max-h-60 min-h-12 w-full resize-none bg-transparent px-1 pt-1 text-sm md:text-base leading-6 text-zinc-100 outline-none placeholder:text-zinc-500"
+            />
+            <div className="mt-1 flex items-center justify-between gap-2 pt-1 border-t border-white/5">
+              <span className="text-[11px] text-zinc-500">Shift + Enter for a new line</span>
+              <div className="flex items-center gap-2">
+                <MicButton value={prompt} onChange={setPrompt} disabled={busy} className="size-8 rounded-xl hover:bg-white/5 text-zinc-400" />
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  disabled={!prompt.trim() || busy}
+                  aria-label="Create workspace"
+                  className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-[#f59e0b] hover:bg-[#ea580c] text-black font-bold transition-all hover:scale-105 active:scale-95 disabled:opacity-40 disabled:hover:scale-100 cursor-pointer shadow-md shadow-amber-500/25"
+                >
+                  <ArrowUp className="size-4 stroke-[2.5]" />
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="mx-auto mt-4 flex max-w-3xl flex-wrap justify-center gap-2">
+      <div className="mx-auto mt-5 flex max-w-3xl flex-wrap justify-center gap-2">
         {EXAMPLE_PROMPTS.map((example) => (
           <button
             key={example}
             type="button"
             onClick={() => setPrompt(example)}
             disabled={busy}
-            className="rounded-full border border-white/10 bg-white/3 px-3.5 py-1.5 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+            className="rounded-full border border-white/8 bg-[#161720] px-3.5 py-1.5 text-xs text-zinc-400 transition-all hover:border-amber-500/40 hover:text-zinc-100 hover:bg-[#1a1c27] hover:scale-[1.02] cursor-pointer shadow-sm"
           >
             {example}
           </button>

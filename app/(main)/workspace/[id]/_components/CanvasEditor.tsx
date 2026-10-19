@@ -12,6 +12,7 @@ import {
   UserRecordType,
   DefaultToolbar,
   DefaultToolbarContent,
+  DefaultNavigationPanel,
   inlineBase64AssetStore,
   defaultShapeUtils,
   defaultBindingUtils,
@@ -38,10 +39,11 @@ const components: TLComponents = {
   StylePanel: null,
   PageMenu: null,
   MainMenu: null,
+  NavigationPanel: DefaultNavigationPanel,
   Toolbar: () => (
-    <DefaultToolbar orientation="vertical">
-      <AddEntityTableButton />
+    <DefaultToolbar orientation="horizontal">
       <DefaultToolbarContent />
+      <AddEntityTableButton />
     </DefaultToolbar>
   ),
 };
@@ -191,7 +193,7 @@ export function CanvasEditor({
   }, [userId, userName]);
 
   return (
-    <div className="isolate h-full [&_.tlui-main-toolbar--vertical]:top-4!">
+    <div className="isolate h-full relative [&_.tlui-layout__bottom]:bottom-4!">
       {SYNC_URL ? (
         <SyncedCanvas
           workspaceId={workspaceId}

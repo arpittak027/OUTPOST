@@ -25,13 +25,14 @@ export default function Home() {
             docs, while your whole team works alongside it in real time.
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button asChild size="lg" className="gap-2 text-base">
-              <Link href="/sign-up">
-                Start building free <ArrowRight className="size-4" />
-              </Link>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="text-base">
+          <div className="mt-8 flex flex-col gap-3.5 sm:flex-row">
+            <Link
+              href="/sign-up"
+              className="inline-flex items-center justify-center gap-2 h-11 px-6 bg-[#f59e0b] hover:bg-[#ea580c] text-black font-semibold text-sm rounded-xl shadow-lg shadow-amber-500/25 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              Start building free <ArrowRight className="size-4 stroke-[2.5]" />
+            </Link>
+            <Button asChild size="lg" variant="outline" className="h-11 rounded-xl border-white/12 bg-white/4 hover:bg-white/8 text-sm font-medium text-zinc-200">
               <Link href="#how-it-works">See how it works</Link>
             </Button>
           </div>
@@ -41,7 +42,7 @@ export default function Home() {
             smaller, with MP4 as the fallback for browsers without VP9. */}
         <div className="survey-frame scroll-tilt mx-auto mt-16 max-w-5xl">
           {/* A slightly narrower frame than the 16:9 video, so object-cover trims the sides. */}
-          <div className="aspect-16/9.25 overflow-hidden rounded-2xl border border-white/10 bg-card shadow-2xl shadow-black/40">
+          <div className="aspect-16/9.25 overflow-hidden rounded-2xl border border-white/12 bg-[#101117] shadow-2xl shadow-black/80 ring-1 ring-white/10">
             <video
               autoPlay
               muted

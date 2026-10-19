@@ -40,7 +40,7 @@ export function EditableWorkspaceName({
           }
         }}
         autoFocus
-        className="rounded-md border border-input bg-transparent px-1.5 py-0.5 text-sm font-medium outline-none focus:border-ring"
+        className="rounded px-2 py-0.5 text-sm font-semibold text-white bg-white/[0.06] border border-amber-500/50 outline-none focus:ring-1 focus:ring-amber-500/30 transition-all shadow-sm"
       />
     );
   }
@@ -48,7 +48,8 @@ export function EditableWorkspaceName({
   return (
     <button
       onClick={() => setEditing(true)}
-      className="rounded-md px-1.5 py-0.5 text-sm font-medium transition-colors hover:bg-accent"
+      title="Click to rename workspace"
+      className="rounded px-2 py-0.5 text-sm font-semibold text-zinc-100 hover:text-white hover:bg-white/[0.06] transition-colors border border-transparent hover:border-white/10"
     >
       {name}
     </button>

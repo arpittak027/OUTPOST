@@ -30,7 +30,13 @@ export function DocEditor({ workspaceId, initialContent, initialState }: DocEdit
   const collab = useCollaborativeDoc(workspaceId, initialState);
 
   if (!collab || !user) {
-    return <div className="p-6 text-sm text-muted-foreground">Loading document...</div>;
+    return (
+      <div className="h-full flex flex-col justify-start items-start p-8 space-y-4 bg-[#0c0d12]">
+        <div className="h-6 w-44 rounded bg-white/[0.05] animate-pulse" />
+        <div className="h-4 w-72 rounded bg-white/[0.03] animate-pulse" />
+        <div className="h-4 w-60 rounded bg-white/[0.03] animate-pulse" />
+      </div>
+    );
   }
 
   return (
@@ -103,7 +109,7 @@ function CollaborativeEditor({
   }, [doc, editor, provider, workspaceId]);
 
   return (
-    <div className="h-full overflow-y-auto pt-6">
+    <div className="h-full overflow-y-auto bg-[#0c0d12] px-2 py-6 custom-scrollbar">
       <BlockNoteView editor={editor} theme={outpostDarkTheme} />
     </div>
   );

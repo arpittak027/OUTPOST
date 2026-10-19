@@ -52,39 +52,39 @@
 /* Outpost is dark-mode only, so :root and .dark share one palette — no light variant to maintain. */
 :root,
 .dark {
-  --background: oklch(0.13 0.004 285);
+  --background: oklch(0.115 0.003 285);
   --foreground: oklch(0.97 0.002 285);
-  --card: oklch(0.17 0.005 285);
+  --card: oklch(0.145 0.005 285);
   --card-foreground: oklch(0.97 0.002 285);
-  --popover: oklch(0.18 0.005 285);
+  --popover: oklch(0.15 0.005 285);
   --popover-foreground: oklch(0.97 0.002 285);
-  /* Amber accent — brand color, deliberately not the generic AI-purple */
+  /* Amber / Orange accent — brand color matching reference video */
   --primary: oklch(0.74 0.16 55);
-  --primary-foreground: oklch(0.15 0.02 55);
-  --secondary: oklch(0.24 0.006 285);
+  --primary-foreground: oklch(0.12 0.02 55);
+  --secondary: oklch(0.19 0.006 285);
   --secondary-foreground: oklch(0.97 0.002 285);
-  --muted: oklch(0.22 0.006 285);
-  --muted-foreground: oklch(0.64 0.01 285);
-  --accent: oklch(0.27 0.02 55);
-  --accent-foreground: oklch(0.93 0.03 60);
+  --muted: oklch(0.165 0.005 285);
+  --muted-foreground: oklch(0.62 0.01 285);
+  --accent: oklch(0.24 0.03 55);
+  --accent-foreground: oklch(0.94 0.03 60);
   --destructive: oklch(0.65 0.22 25);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.74 0.16 55 / 50%);
+  --border: oklch(1 0 0 / 8%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.74 0.16 55 / 45%);
   --chart-1: oklch(0.74 0.16 55);
   --chart-2: oklch(0.6 0.14 40);
   --chart-3: oklch(0.5 0.02 285);
   --chart-4: oklch(0.4 0.01 285);
   --chart-5: oklch(0.3 0.01 285);
   --radius: 0.625rem;
-  --sidebar: oklch(0.15 0.004 285);
+  --sidebar: oklch(0.13 0.004 285);
   --sidebar-foreground: oklch(0.97 0.002 285);
   --sidebar-primary: oklch(0.74 0.16 55);
-  --sidebar-primary-foreground: oklch(0.15 0.02 55);
-  --sidebar-accent: oklch(0.22 0.006 285);
+  --sidebar-primary-foreground: oklch(0.12 0.02 55);
+  --sidebar-accent: oklch(0.19 0.006 285);
   --sidebar-accent-foreground: oklch(0.97 0.002 285);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.74 0.16 55 / 50%);
+  --sidebar-border: oklch(1 0 0 / 8%);
+  --sidebar-ring: oklch(0.74 0.16 55 / 45%);
 }
 
 @layer base {
@@ -93,11 +93,11 @@
   }
 
   body {
-    @apply bg-background text-foreground relative;
+    @apply bg-background text-foreground relative selection:bg-primary/25 selection:text-white;
   }
 
   html {
-    @apply font-sans;
+    @apply font-sans scroll-smooth;
   }
 
   h1,
@@ -110,6 +110,150 @@
   .bn-container :is(h1, h2, h3) {
     font-family: inherit;
   }
+}
+
+/* Micro-animations and transitions */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 12px 3px rgba(245, 158, 11, 0.2);
+  }
+}
+
+@utility animate-fade-in {
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-fade-in-up {
+  animation: fadeInUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-slide-in-right {
+  animation: slideInRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-scale-in {
+  animation: scaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility amber-glow {
+  box-shadow: 0 0 15px -3px rgba(245, 158, 11, 0.25), 0 0 6px -2px rgba(245, 158, 11, 0.15);
+}
+
+@utility glass-panel {
+  background: rgba(20, 21, 28, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@utility card-interactive {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  &:hover {
+    transform: translateY(-2px);
+    border-color: rgba(245, 158, 11, 0.35);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 0 12px -2px rgba(245, 158, 11, 0.12);
+  }
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Tldraw Dark Glassmorphism Dock matching hero reference video */
+.tlui-main-toolbar--horizontal {
+  background: rgba(18, 19, 25, 0.88) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+  padding: 4px 6px !important;
+  gap: 3px !important;
+}
+
+.tlui-main-toolbar--horizontal .tlui-button {
+  border-radius: 9px !important;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  color: oklch(0.7 0.01 285) !important;
+}
+
+.tlui-main-toolbar--horizontal .tlui-button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+.tlui-main-toolbar--horizontal .tlui-button[data-state='selected'],
+.tlui-main-toolbar--horizontal .tlui-button[aria-pressed='true'] {
+  background: rgba(245, 158, 11, 0.18) !important;
+  color: #f59e0b !important;
+  box-shadow: inset 0 0 0 1px rgba(245, 158, 11, 0.35) !important;
+}
+
+.tlui-navigation-panel {
+  background: rgba(18, 19, 25, 0.88) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+}
+
+.tlui-navigation-panel .tlui-button {
+  border-radius: 6px !important;
+  transition: all 0.15s ease !important;
+}
+
+.tlui-navigation-panel .tlui-button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #fff !important;
 }
 
 /* Topographic contours (public/textures/topo.svg): Outpost's background identity, a nod to

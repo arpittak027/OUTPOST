@@ -91,24 +91,36 @@ export function WorkspaceBoard({ workspaces }: { workspaces: BoardWorkspace[] })
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {WORKSPACE_STATUSES.map((column) => {
           const columnWorkspaces = columnItems(items, column.status);
           return (
-            <div key={column.status} className="flex flex-col rounded-lg bg-white/3">
-              <div className="flex items-center gap-2 px-3 pt-3 pb-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
-                {column.title}
-                <span className="font-normal">{columnWorkspaces.length}</span>
+            <div key={column.status} className="flex flex-col rounded-2xl border border-white/6 bg-[#121319]/80 backdrop-blur-md p-2 shadow-lg">
+              <div className="flex items-center justify-between px-3 py-2.5 text-xs font-semibold tracking-wider text-zinc-400 uppercase">
+                <span className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-amber-400/80" />
+                  {column.title}
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-white/5 text-[10px] font-mono text-zinc-400 border border-white/5">
+                  {columnWorkspaces.length}
+                </span>
               </div>
               <Droppable droppableId={column.status}>
                 {(provided, snapshot) => (
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`flex min-h-40 flex-1 flex-col gap-1.5 rounded-b-lg p-2 transition-colors ${
-                      snapshot.isDraggingOver ? "bg-primary/5" : ""
+                    className={`flex min-h-64 flex-1 flex-col gap-2.5 rounded-xl p-1.5 transition-all ${
+                      snapshot.isDraggingOver
+                        ? "bg-amber-500/5 ring-1 ring-amber-500/30 rounded-xl"
+                        : ""
                     }`}
                   >
+                    {columnWorkspaces.length === 0 && !snapshot.isDraggingOver && (
+                      <div className="flex flex-1 items-center justify-center rounded-xl border border-dashed border-white/6 p-6 text-center text-xs text-zinc-500">
+                        Drop workspaces here
+                      </div>
+                    )}
                     {columnWorkspaces.map((workspace, index) => (
                       <Draggable key={workspace.id} draggableId={workspace.id} index={index}>
                         {(provided, snapshot) => (

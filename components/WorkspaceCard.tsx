@@ -30,27 +30,33 @@ export function WorkspaceCard({
 }) {
   return (
     <div
-      className={`group relative flex h-36 flex-col gap-1 rounded-md bg-muted p-3.5 shadow-sm shadow-black/40 ring-1 transition-colors hover:bg-secondary ${
-        highlighted ? "shadow-lg ring-primary/60" : "ring-white/6"
+      className={`group relative flex h-38 flex-col gap-1.5 rounded-xl border p-4 shadow-md transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/60 ${
+        highlighted
+          ? "border-amber-500/60 bg-[#191b26] ring-2 ring-amber-500/20 shadow-amber-500/10"
+          : "border-white/8 bg-[#15161f] hover:border-amber-500/40 hover:bg-[#181a25]"
       }`}
     >
       {/* after:inset-0 stretches the link over the whole card, so `actions` can sit on top
           without being nested inside the link. */}
-      <Link
-        href={`/workspace/${workspace.id}`}
-        draggable={false}
-        className="line-clamp-2 pr-7 text-sm leading-snug font-medium after:absolute after:inset-0"
-      >
-        {workspace.name}
-      </Link>
+      <div className="flex items-start justify-between gap-2">
+        <Link
+          href={`/workspace/${workspace.id}`}
+          draggable={false}
+          className="line-clamp-2 pr-2 text-sm leading-snug font-semibold text-zinc-100 group-hover:text-amber-300 transition-colors after:absolute after:inset-0"
+        >
+          {workspace.name}
+        </Link>
+        {actions}
+      </div>
+
       {workspace.description && (
-        <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">{workspace.description}</p>
+        <p className="line-clamp-2 text-xs leading-relaxed text-zinc-400">{workspace.description}</p>
       )}
 
-      <div className="mt-auto flex items-center justify-between gap-2 text-[11px] text-muted-foreground">
+      <div className="mt-auto flex items-center justify-between gap-2 text-[11px] text-zinc-400 pt-2 border-t border-white/4">
         {/* Relative time can differ by a minute between the server and browser render. */}
         <span className="flex min-w-0 items-center gap-1.5" suppressHydrationWarning>
-          <LayoutGrid className="size-3.5 shrink-0 text-primary" />
+          <span className="size-1.5 rounded-full bg-amber-400/80 group-hover:animate-ping" />
           <span className="truncate" suppressHydrationWarning>
             {showStatus && `${statusTitle(workspace.status)} · `}
             {formatDistanceToNow(workspace.lastActivity, { addSuffix: true })}
@@ -58,8 +64,6 @@ export function WorkspaceCard({
         </span>
         <CreatorAvatar creator={workspace.creator} />
       </div>
-
-      {actions}
     </div>
   );
 }

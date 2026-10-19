@@ -2,17 +2,17 @@
 // the app's actual tokens from globals.css so the doc panel matches the rest of the UI exactly.
 export const outpostDarkTheme = {
   colors: {
-    editor: { text: "oklch(0.98 0 0)", background: "oklch(0.12 0 0)" },
-    menu: { text: "oklch(0.98 0 0)", background: "oklch(0.17 0 0)" },
-    tooltip: { text: "oklch(0.98 0 0)", background: "oklch(0.17 0 0)" },
-    hovered: { text: "oklch(0.98 0 0)", background: "oklch(0.24 0 0)" },
-    selected: { text: "oklch(0.98 0 0)", background: "oklch(0.32 0 0)" },
-    disabled: { text: "oklch(0.72 0 0)", background: "oklch(0.24 0 0)" },
-    shadow: "oklch(0 0 0 / 30%)",
-    border: "oklch(1 0 0 / 10%)",
-    sideMenu: "oklch(0.72 0 0)",
+    editor: { text: "#f4f4f5", background: "#0c0d12" },
+    menu: { text: "#f4f4f5", background: "#16171e" },
+    tooltip: { text: "#f4f4f5", background: "#16171e" },
+    hovered: { text: "#ffffff", background: "#22242e" },
+    selected: { text: "#ffffff", background: "#2c2f3c" },
+    disabled: { text: "#71717a", background: "#1c1d25" },
+    shadow: "0 12px 32px -8px rgba(0, 0, 0, 0.7)",
+    border: "rgba(255, 255, 255, 0.08)",
+    sideMenu: "#a1a1aa",
     highlights: {},
   },
   borderRadius: 8,
-  fontFamily: "var(--font-geist-sans)",
+  fontFamily: "var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif",
 };
