@@ -18,6 +18,23 @@ export async function checkUser() {
   const email = clerkUser.emailAddresses[0]?.emailAddress;
   if (!email) return null;
 
+  const existingByEmail = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (existingByEmail) {
+    return prisma.user.update({
+      where: { email },
+      data: {
+        clerkId: clerkUser.id,
+        name:
+          `${clerkUser.firstName ?? ""} ${clerkUser.lastName ?? ""}`.trim() ||
+          existingByEmail.name,
+        imageUrl: clerkUser.imageUrl || existingByEmail.imageUrl,
+      },
+    });
+  }
+
   return prisma.user.create({
     data: {
       clerkId: clerkUser.id,
