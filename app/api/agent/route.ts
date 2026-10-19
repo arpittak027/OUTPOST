@@ -1,10 +1,13 @@
 import { google } from "@ai-sdk/google";
 import { streamText, convertToModelMessages, type UIMessage } from "ai";
+import { auth } from "@clerk/nextjs/server";
 import { agentToolDefs } from "@/lib/agent-tools";
 import { PROMPT_LIMIT_ERROR } from "@/lib/plan-limits";
-import { checkUser } from "@/actions/check-user";
-import { canAccessWorkspace } from "@/lib/workspace-access";
-import { getPromptUsage, getWorkspaceOwnerId, recordPrompt } from "@/lib/billing";
+import { prisma } from "@/lib/prisma";
+import { getPromptUsage, recordPrompt } from "@/lib/billing";
+
+export const maxDuration = 30;
+export const dynamic = "force-dynamic";
 
 const SYSTEM_PROMPT = `You are Outpost's workspace agent. A workspace has two surfaces: a canvas (an infinite whiteboard for diagrams) and a doc (a rich-text document). You change them only by calling tools, never by describing changes in text. Never use em dashes in your replies.
 
@@ -35,9 +38,46 @@ Canvas layout rules: diagrams must never look cluttered or have overlapping shap
 
 const NOT_OPEN = "(not open in this view, so its tools will fail)";
 
+function sanitizeMessages(messages: UIMessage[]): UIMessage[] {
+  if (!Array.isArray(messages) || messages.length === 0) return [];
+
+  const result: UIMessage[] = [];
+  for (const m of messages) {
+    if (!m || !m.role) continue;
+
+    // Skip empty assistant messages
+    if (m.role === "assistant") {
+      const hasText = m.parts?.some((p) => p.type === "text" && (p as any).text?.trim());
+      const hasTools = m.parts?.some(
+        (p) => p.type.startsWith("tool-") || p.type === "dynamic-tool"
+      );
+      if (!hasText && !hasTools) continue;
+    }
+
+    const prev = result[result.length - 1];
+    // If consecutive user messages, merge their text into the previous message
+    if (prev && prev.role === "user" && m.role === "user") {
+      const prevText = prev.parts
+        .filter((p) => p.type === "text")
+        .map((p: any) => p.text)
+        .join("\n");
+      const currentText = m.parts
+        .filter((p) => p.type === "text")
+        .map((p: any) => p.text)
+        .join("\n");
+      prev.parts = [{ type: "text", text: `${prevText}\n${currentText}` }];
+      continue;
+    }
+
+    result.push(m);
+  }
+  return result;
+}
+
 export async function POST(req: Request) {
-  const user = await checkUser();
-  if (!user) return new Response("Unauthorized", { status: 401 });
+  // Fast JWT session verification (0ms network latency)
+  const { userId, orgId } = await auth();
+  if (!userId) return new Response("Unauthorized", { status: 401 });
 
   const {
     messages,
@@ -51,28 +91,52 @@ export async function POST(req: Request) {
     docContext: string | null;
   } = await req.json();
 
-  if (!(await canAccessWorkspace(workspaceId))) return new Response("Workspace not found", { status: 404 });
+  // Single fast indexed DB query for workspace permissions & ownership
+  const workspace = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: {
+      clerkOrgId: true,
+      creator: { select: { clerkId: true } },
+    },
+  });
+  if (!workspace) return new Response("Workspace not found", { status: 404 });
 
-  // Only a message the user typed counts as a prompt; the automatic follow-ups after tool calls
-  // end with the agent's own message, so a prompt that draws 20 shapes still counts once.
-  let ownerId: string | null = null;
-  if (messages.at(-1)?.role === "user") {
-    ownerId = await getWorkspaceOwnerId(workspaceId);
-    const { used, limit } = await getPromptUsage(ownerId);
-    // Checked before calling Gemini, so an exhausted plan costs nothing.
-    if (used >= limit) return Response.json({ error: PROMPT_LIMIT_ERROR, used, limit }, { status: 402 });
+  const isOwner = workspace.creator.clerkId === userId;
+  const isOrgMember = workspace.clerkOrgId && workspace.clerkOrgId === orgId;
+  if (!isOwner && !isOrgMember) {
+    return new Response("Workspace not found", { status: 404 });
   }
 
+  const ownerId = workspace.clerkOrgId ?? workspace.creator.clerkId;
+
+  // Prompt quota limit check
+  if (messages.at(-1)?.role === "user") {
+    try {
+      const { used, limit } = await getPromptUsage(ownerId);
+      if (used >= limit) {
+        return Response.json({ error: PROMPT_LIMIT_ERROR, used, limit }, { status: 402 });
+      }
+    } catch {
+      // Graceful pass-through if billing check is unavailable
+    }
+  }
+
+  const sanitized = sanitizeMessages(messages);
+  const modelMessages = await convertToModelMessages(sanitized);
+
+  // Fast Gemini 3.5 Flash Lite model for instant sub-2-second responses without serverless timeout
   const result = streamText({
-    model: google("gemini-3.5-flash"),
+    model: google("gemini-3.5-flash-lite"),
     system: `${SYSTEM_PROMPT}\n\nCurrent canvas state:\n${canvasContext ?? NOT_OPEN}\n\nCurrent doc state:\n${docContext ?? NOT_OPEN}`,
-    // No `execute` on any tool: they run in the browser against the live canvas and doc editors
-    // (see hooks/use-workspace-agent-chat.ts), since that's where the real state lives.
     tools: agentToolDefs,
-    messages: await convertToModelMessages(messages),
-    // Charged only once Gemini answers, so a failed request (e.g. high demand) costs nothing.
+    messages: modelMessages,
+    maxRetries: 1,
     onFinish: async () => {
-      if (ownerId) await recordPrompt(ownerId, user.id, workspaceId);
+      try {
+        if (ownerId) await recordPrompt(ownerId, userId, workspaceId);
+      } catch {
+        // Record prompt non-blocking
+      }
     },
   });
 

@@ -35,6 +35,14 @@ export function AgentChatPanel({
     setInput("");
   };
 
+  const handleRetry = () => {
+    const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+    const lastPart = lastUserMsg?.parts?.find((p) => p.type === "text") as { text: string } | undefined;
+    if (lastPart?.text) {
+      sendMessage({ text: lastPart.text });
+    }
+  };
+
   return (
     <div className="flex h-full w-full flex-col border-l border-white/10 bg-card">
       <div className="flex h-12 shrink-0 items-center justify-between border-b border-white/6 px-4 text-sm font-medium">
@@ -129,22 +137,34 @@ export function AgentChatPanel({
           </p>
         )}
         {error && (
-          <p className="rounded-md border border-white/10 bg-white/3 px-3 py-2 text-xs text-muted-foreground">
-            {error.message.includes(PROMPT_LIMIT_ERROR) ? (
-              <>
-                You&apos;re out of agent prompts this month.{" "}
-                <button
-                  type="button"
-                  onClick={() => openUpgrade(UPGRADE_REASONS.prompts)}
-                  className="font-medium text-primary hover:underline"
-                >
-                  Upgrade
-                </button>
-              </>
-            ) : (
-              "Something went wrong. Try sending that again."
+          <div className="rounded-md border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-200 space-y-2">
+            <p>
+              {error.message?.includes(PROMPT_LIMIT_ERROR) ? (
+                <>
+                  You&apos;re out of agent prompts this month.{" "}
+                  <button
+                    type="button"
+                    onClick={() => openUpgrade(UPGRADE_REASONS.prompts)}
+                    className="font-medium text-primary underline"
+                  >
+                    Upgrade
+                  </button>
+                </>
+              ) : (
+                "The agent request was interrupted or timed out. Please try again."
+              )}
+            </p>
+            {!error.message?.includes(PROMPT_LIMIT_ERROR) && (
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-7 text-xs border-white/20 bg-white/5 hover:bg-white/10"
+                onClick={handleRetry}
+              >
+                Retry
+              </Button>
             )}
-          </p>
+          </div>
         )}
       </div>
 
