@@ -64,7 +64,7 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: google("gemini-3.5-flash-lite"),
+    model: google("gemini-3.8-flash"),
     system: `${SYSTEM_PROMPT}\n\nCurrent canvas state:\n${canvasContext ?? NOT_OPEN}\n\nCurrent doc state:\n${docContext ?? NOT_OPEN}`,
     // No `execute` on any tool: they run in the browser against the live canvas and doc editors
     // (see hooks/use-workspace-agent-chat.ts), since that's where the real state lives.
