@@ -64,20 +64,17 @@ export async function POST(req: Request) {
   }
 
   const result = streamText({
-    model: google("gemini-3.8-flash"),
+    model: google("gemini-3.5-flash"),
     system: `${SYSTEM_PROMPT}\n\nCurrent canvas state:\n${canvasContext ?? NOT_OPEN}\n\nCurrent doc state:\n${docContext ?? NOT_OPEN}`,
     // No `execute` on any tool: they run in the browser against the live canvas and doc editors
     // (see hooks/use-workspace-agent-chat.ts), since that's where the real state lives.
     tools: agentToolDefs,
     messages: await convertToModelMessages(messages),
-    providerOptions: {
-      google: { thinkingConfig: { includeThoughts: true } },
-    },
     // Charged only once Gemini answers, so a failed request (e.g. high demand) costs nothing.
     onFinish: async () => {
       if (ownerId) await recordPrompt(ownerId, user.id, workspaceId);
     },
   });
 
-  return result.toUIMessageStreamResponse({ sendReasoning: true });
+  return result.toUIMessageStreamResponse();
 }
