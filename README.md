@@ -13,6 +13,7 @@ Developed by [Arpit Tak](https://github.com/arpittak027)
 [![Prisma](https://img.shields.io/badge/Prisma-7-2d3748?style=flat&logo=prisma)](https://www.prisma.io/)
 [![Clerk](https://img.shields.io/badge/Clerk-Auth%20%26%20Orgs-6c47ff?style=flat&logo=clerk)](https://clerk.com/)
 [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-AI%20Agent-4285f4?style=flat&logo=google)](https://aistudio.google.com/)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Netlify-00ad9f?style=flat&logo=netlify)](https://lively-centaur-28c934.netlify.app)
 [![CI](https://github.com/arpittak027/OUTPOST/actions/workflows/ci.yml/badge.svg)](https://github.com/arpittak027/OUTPOST/actions/workflows/ci.yml)
 
 </div>
