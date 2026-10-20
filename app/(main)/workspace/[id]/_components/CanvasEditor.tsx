@@ -92,6 +92,9 @@ function useCanvasListeners(
   return handleMount;
 }
 
+type TldrawUser = Parameters<typeof Tldraw>[0]["user"];
+type SyncUsers = Parameters<typeof useSync>[0]["users"];
+
 function SyncedCanvas({
   workspaceId,
   initialSnapshot,
@@ -101,8 +104,8 @@ function SyncedCanvas({
 }: {
   workspaceId: string;
   initialSnapshot: TLEditorSnapshot | null;
-  currentUser: any;
-  users: any;
+  currentUser: TldrawUser;
+  users: SyncUsers;
   syncUrl: string;
 }) {
   const { setCanvasEditor } = useWorkspaceEditors();
@@ -135,7 +138,7 @@ function StandaloneCanvas({
 }: {
   workspaceId: string;
   initialSnapshot: TLEditorSnapshot | null;
-  currentUser: any;
+  currentUser: TldrawUser;
 }) {
   const { setCanvasEditor } = useWorkspaceEditors();
   const handleMount = useCanvasListeners(workspaceId, initialSnapshot, setCanvasEditor);

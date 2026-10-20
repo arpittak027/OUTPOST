@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { ArrowUp, Sparkles, Square, Wand2, X } from "lucide-react";
 import { isToolUIPart, isDynamicToolUIPart } from "ai";
@@ -11,10 +11,10 @@ import { useUpgradeDialog } from "@/components/UpgradeDialog";
 import { PROMPT_LIMIT_ERROR, UPGRADE_REASONS } from "@/lib/plan-limits";
 import { submitOnEnter } from "@/lib/utils";
 
-function formatToolSummary(toolName: string, args: any): string {
+function formatToolSummary(toolName: string, args: Record<string, unknown> | undefined): string {
   if (!args) return toolName;
   if (toolName === "createRectangle") {
-    const label = args.label?.split("\n")[0] || args.id || "";
+    const label = (typeof args.label === "string" ? args.label.split("\n")[0] : null) || (typeof args.id === "string" ? args.id : "");
     return `createRectangle ${label}`.trim();
   }
   if (toolName === "createArrow") {
@@ -24,7 +24,7 @@ function formatToolSummary(toolName: string, args: any): string {
     return `createEntityTable ${args.tableName || args.id || ""}`.trim();
   }
   if (toolName === "updateShape") {
-    const label = args.label?.split("\n")[0] || args.id || "";
+    const label = (typeof args.label === "string" ? args.label.split("\n")[0] : null) || (typeof args.id === "string" ? args.id : "");
     return `updateShape ${label}`.trim();
   }
   if (toolName === "insertDocContent") {
@@ -49,10 +49,15 @@ export function AgentChatPanel({
   onClose?: () => void;
 }) {
   const [input, setInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, sendMessage, stop, status, error } = chat;
   const openUpgrade = useUpgradeDialog();
 
   const isBusy = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, status]);
 
   const handleSend = () => {
     const trimmed = input.trim();
@@ -122,7 +127,7 @@ export function AgentChatPanel({
             if (message.role === "user") {
               const textContent = message.parts
                 ?.filter((p) => p.type === "text")
-                .map((p: any) => p.text)
+                .map((p) => (p as { text: string }).text)
                 .join("\n") || "";
 
               return (
@@ -179,7 +184,8 @@ export function AgentChatPanel({
                       ? part.toolName
                       : part.type.replace(/^tool-/, "");
                     const isDone = part.state === "output-available";
-                    const args = (part as any).args || (part as any).input;
+                    const args = ((part as { args?: Record<string, unknown> }).args ||
+                      (part as { input?: Record<string, unknown> }).input);
 
                     return (
                       <div
@@ -256,6 +262,7 @@ export function AgentChatPanel({
             )}
           </div>
         )}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Floating Prompt Input Bar matching reference video */}

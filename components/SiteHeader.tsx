@@ -49,13 +49,12 @@ export function SiteHeader() {
               account instead of being forced to create/join an org. */}
           <OrganizationSwitcher afterCreateOrganizationUrl="/dashboard" afterSelectOrganizationUrl="/dashboard" />
           {isLandingPage ? (
-            <button
-              type="button"
-              onClick={() => window.location.href = "/dashboard"}
-              className="h-8 px-3.5 bg-[#f59e0b] hover:bg-[#ea580c] text-black font-semibold text-xs rounded-lg shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center justify-center h-8 px-3.5 bg-[#f59e0b] hover:bg-[#ea580c] text-black font-semibold text-xs rounded-lg shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
               Dashboard
-            </button>
+            </Link>
           ) : (
             <PlanButton />
           )}

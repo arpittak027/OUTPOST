@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { ArrowUp } from "lucide-react";
 import { createWorkspace } from "@/actions/workspace";
 import { useFetch } from "@/hooks/use-fetch";
-import { Button } from "@/components/ui/button";
 import { MicButton } from "@/components/MicButton";
 import { useUpgradeDialog } from "@/components/UpgradeDialog";
 import { UPGRADE_REASONS } from "@/lib/plan-limits";

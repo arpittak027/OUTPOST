@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import type { Block } from "@blocknote/core";
 import type { TLEditorSnapshot } from "tldraw";
 import { Button } from "@/components/ui/button";
@@ -30,7 +31,7 @@ interface WorkspaceViewProps {
   entitlements: {
     publicSharing: boolean;
     pdfExport: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   initialView: ViewMode;
   initialPrompt?: string;
@@ -50,6 +51,7 @@ function WorkspaceViewInner({
   initialDocState,
   initialCanvasSnapshot,
 }: WorkspaceViewProps) {
+  const { user } = useUser();
   const [view, setView] = useState<ViewMode>(initialView);
   const [isAgentOpen, setIsAgentOpen] = useState(true);
 
@@ -90,9 +92,13 @@ function WorkspaceViewInner({
             />
           </Link>
           <div className="flex items-center gap-1.5 min-w-0 text-sm font-medium">
-            <span className="text-zinc-400 font-medium truncate max-w-[120px] hidden md:inline">
-              Acme Studio
-            </span>
+            <Link
+              href="/dashboard"
+              className="text-zinc-400 hover:text-zinc-200 transition-colors font-medium truncate max-w-[120px] hidden md:inline"
+              title="Dashboard"
+            >
+              Dashboard
+            </Link>
             <span className="text-zinc-600 text-xs hidden md:inline">/</span>
             <div className="truncate font-medium text-zinc-100">
               <EditableWorkspaceName workspaceId={workspaceId} initialName={initialName} />
@@ -105,7 +111,7 @@ function WorkspaceViewInner({
           <button
             type="button"
             onClick={() => setView("doc")}
-            className={`h-7 px-3 text-xs font-medium rounded-lg transition-all ${
+            className={`h-7 px-3 text-xs font-medium rounded-lg transition-all cursor-pointer ${
               view === "doc"
                 ? "bg-[#23252f] text-white shadow-sm border border-white/10"
                 : "text-zinc-400 hover:text-zinc-200 hover:bg-white/4"
@@ -116,7 +122,7 @@ function WorkspaceViewInner({
           <button
             type="button"
             onClick={() => setView("both")}
-            className={`h-7 px-3 text-xs font-medium rounded-lg transition-all ${
+            className={`h-7 px-3 text-xs font-medium rounded-lg transition-all cursor-pointer ${
               view === "both"
                 ? "bg-[#23252f] text-white shadow-sm border border-white/10"
                 : "text-zinc-400 hover:text-zinc-200 hover:bg-white/4"
@@ -127,7 +133,7 @@ function WorkspaceViewInner({
           <button
             type="button"
             onClick={() => setView("canvas")}
-            className={`h-7 px-3 text-xs font-medium rounded-lg transition-all ${
+            className={`h-7 px-3 text-xs font-medium rounded-lg transition-all cursor-pointer ${
               view === "canvas"
                 ? "bg-[#23252f] text-white shadow-sm border border-white/10"
                 : "text-zinc-400 hover:text-zinc-200 hover:bg-white/4"
@@ -139,16 +145,30 @@ function WorkspaceViewInner({
 
         {/* Right actions */}
         <div className="flex flex-1 items-center justify-end gap-2.5">
-          {/* Team presence avatar stack from reference video */}
-          <div className="hidden lg:flex items-center -space-x-1.5 mr-1">
-            <span className="flex size-6 items-center justify-center rounded-full bg-amber-500 ring-2 ring-[#0f1014] text-[10px] font-bold text-black shadow-sm" title="You">
-              Y
-            </span>
-            <span className="flex size-6 items-center justify-center rounded-full bg-sky-500 ring-2 ring-[#0f1014] text-[10px] font-bold text-white shadow-sm" title="Alex">
-              A
-            </span>
-            <span className="flex size-6 items-center justify-center rounded-full bg-emerald-500 ring-2 ring-[#0f1014] text-[10px] font-bold text-white shadow-sm" title="Sam">
-              S
+          {/* Active collaborator status */}
+          <div className="hidden sm:flex items-center -space-x-1.5 mr-1">
+            {user?.imageUrl ? (
+              <Image
+                src={user.imageUrl}
+                alt={user.fullName ?? "You"}
+                title={user.fullName ?? "You"}
+                width={24}
+                height={24}
+                className="size-6 rounded-full ring-2 ring-[#0f1014] object-cover"
+              />
+            ) : (
+              <span
+                className="flex size-6 items-center justify-center rounded-full bg-amber-500 ring-2 ring-[#0f1014] text-[10px] font-bold text-black shadow-sm"
+                title={user?.fullName ?? "You"}
+              >
+                {(user?.firstName?.[0] || user?.username?.[0] || "Y").toUpperCase()}
+              </span>
+            )}
+            <span
+              className="flex size-6 items-center justify-center rounded-full bg-[#1b1c24] ring-2 ring-[#0f1014] text-[10px] font-bold text-amber-400 shadow-sm border border-amber-500/20"
+              title="AI Agent active"
+            >
+              ✦
             </span>
           </div>
 

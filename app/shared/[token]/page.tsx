@@ -32,25 +32,33 @@ export default async function SharedPage({ params }: PageProps<"/shared/[token]"
   if (!(await getEntitlements(workspaceOwnerId(workspace))).publicSharing) notFound();
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden">
-      <header className="flex h-14 shrink-0 items-center gap-3 border-b border-white/6 bg-background px-4">
-        <Link href="/" className="flex size-8 items-center justify-center rounded-md transition-opacity hover:opacity-80">
-          <Image src="/brand/mascot-dark.png" alt="Outpost" width={24} height={24} className="size-6" />
+    <div className="flex h-dvh flex-col overflow-hidden bg-background">
+      <header className="flex h-13 shrink-0 items-center justify-between border-b border-white/6 bg-[#0f1014] px-4 backdrop-blur-md">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link href="/" className="flex size-7 shrink-0 items-center justify-center rounded-lg transition-transform hover:scale-105" title="Outpost">
+            <Image src="/brand/mascot-dark.png" alt="Outpost" width={22} height={22} className="size-5.5" />
+          </Link>
+          <span className="text-sm font-semibold text-zinc-100 truncate">{workspace.name}</span>
+          <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-[10px] font-medium text-amber-300">
+            View only
+          </Badge>
+        </div>
+        <Link
+          href="/sign-up"
+          className="h-8 px-3.5 bg-[#f59e0b] hover:bg-[#ea580c] text-black font-semibold text-xs rounded-lg shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center cursor-pointer"
+        >
+          Build with Outpost
         </Link>
-        <span className="text-sm font-medium">{workspace.name}</span>
-        <Badge variant="outline" className="border-white/15 text-xs font-normal text-muted-foreground">
-          View only
-        </Badge>
       </header>
 
       <ResizablePanelGroup orientation="horizontal" className="flex-1">
-        <ResizablePanel defaultSize={40} minSize={20}>
-          <div className="h-full overflow-y-auto pt-6">
+        <ResizablePanel defaultSize="40%" minSize="20%">
+          <div className="h-full overflow-y-auto px-2 py-6 bg-[#0c0d12] custom-scrollbar">
             <DocViewer content={workspace.doc?.content as Block[] | null} />
           </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
-        <ResizablePanel defaultSize={60} minSize={20}>
+        <ResizablePanel defaultSize="60%" minSize="20%">
           <CanvasViewer snapshot={workspace.canvas?.content as TLEditorSnapshot | null} />
         </ResizablePanel>
       </ResizablePanelGroup>

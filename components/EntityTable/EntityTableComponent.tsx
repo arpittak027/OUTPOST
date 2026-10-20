@@ -69,18 +69,18 @@ export function EntityTableComponent({ shape }: { shape: EntityTableShape }) {
             <div
               key={row.id}
               style={{ height: ROW_HEIGHT }}
-              className="flex items-center gap-2 border-t border-white/5 px-3 text-xs hover:bg-white/3 transition-colors"
+              className="flex items-center gap-1.5 border-t border-white/5 px-2.5 text-xs hover:bg-white/3 transition-colors"
               onDoubleClick={() => isEditing && setEditingRowId(row.id)}
             >
+              <KeyBadge label="PK" on={row.isPK} editing={isEditingRow} onToggle={() => updateRow(row.id, { isPK: !row.isPK })} />
+              <KeyBadge label="FK" on={row.isFK} editing={isEditingRow} onToggle={() => updateRow(row.id, { isFK: !row.isFK })} />
               {isEditingRow ? (
                 <>
-                  <KeyBadge label="PK" on={row.isPK} editing={isEditingRow} onToggle={() => updateRow(row.id, { isPK: !row.isPK })} />
-                  <KeyBadge label="FK" on={row.isFK} editing={isEditingRow} onToggle={() => updateRow(row.id, { isFK: !row.isFK })} />
                   <input
                     value={row.name}
                     onChange={(e) => updateRow(row.id, { name: e.target.value })}
                     onKeyDown={doneOnEnter}
-                    className="min-w-0 flex-1 bg-transparent text-zinc-200 outline-none font-mono"
+                    className="min-w-0 flex-1 bg-transparent text-zinc-200 outline-none font-mono text-[11px]"
                     placeholder="column_name"
                     autoFocus
                   />
@@ -88,20 +88,22 @@ export function EntityTableComponent({ shape }: { shape: EntityTableShape }) {
                     value={row.dataType}
                     onChange={(e) => updateRow(row.id, { dataType: e.target.value })}
                     onKeyDown={doneOnEnter}
-                    className="w-20 shrink-0 bg-transparent text-right text-zinc-400 outline-none"
+                    className="w-16 shrink-0 bg-transparent text-right text-zinc-400 outline-none text-[11px]"
                     placeholder="type"
                   />
                   <button
+                    type="button"
                     onClick={() => setEditingRowId(null)}
                     title="Done editing row"
-                    className="text-zinc-400 hover:text-white"
+                    className="text-zinc-400 hover:text-white px-0.5 cursor-pointer"
                   >
                     ✓
                   </button>
                   <button
+                    type="button"
                     onClick={() => setRows(rows.filter((r) => r.id !== row.id))}
                     title="Remove row"
-                    className="text-zinc-400 hover:text-red-400"
+                    className="text-zinc-400 hover:text-red-400 px-0.5 cursor-pointer"
                   >
                     ×
                   </button>
@@ -112,8 +114,6 @@ export function EntityTableComponent({ shape }: { shape: EntityTableShape }) {
                     {row.name || "unnamed column"}
                   </span>
                   <span className="text-[11px] text-zinc-400 shrink-0 font-sans">{row.dataType}</span>
-                  <KeyBadge label="PK" on={row.isPK} editing={false} onToggle={() => {}} />
-                  <KeyBadge label="FK" on={row.isFK} editing={false} onToggle={() => {}} />
                 </>
               )}
             </div>
@@ -123,6 +123,7 @@ export function EntityTableComponent({ shape }: { shape: EntityTableShape }) {
 
       {isEditing && (
         <button
+          type="button"
           onClick={addRow}
           className="absolute inset-x-0 top-full mt-1.5 rounded-lg border border-white/15 bg-[#171821] py-1 text-xs font-medium text-zinc-300 shadow-xl hover:bg-white/10 hover:text-white transition-all cursor-pointer"
         >
@@ -136,16 +137,17 @@ export function EntityTableComponent({ shape }: { shape: EntityTableShape }) {
 // PK/FK tag matching reference video
 function KeyBadge({ label, on, editing, onToggle }: { label: "PK" | "FK"; on: boolean; editing: boolean; onToggle: () => void }) {
   const badgeClasses = label === "PK"
-    ? "bg-[#f59e0b] text-black font-bold text-[9px] px-1.5 py-0.5 rounded shadow-sm tracking-wide"
-    : "bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold text-[9px] px-1.5 py-0.5 rounded tracking-wide";
+    ? "bg-[#f59e0b] text-black font-bold text-[9px] px-1.5 py-0.5 rounded shadow-sm tracking-wide leading-none"
+    : "bg-sky-500/20 text-sky-300 border border-sky-500/30 font-bold text-[9px] px-1.5 py-0.5 rounded tracking-wide leading-none";
 
   if (!editing) return on ? <span className={badgeClasses}>{label}</span> : null;
   return (
     <button
+      type="button"
       onClick={onToggle}
       title={label === "PK" ? "Toggle primary key" : "Toggle foreign key"}
-      className={`rounded px-1.5 py-0.5 text-[9px] font-bold cursor-pointer transition-all ${
-        on ? badgeClasses : "text-zinc-500 hover:text-zinc-300 bg-white/5"
+      className={`rounded px-1.5 py-0.5 text-[9px] font-bold cursor-pointer transition-all leading-none ${
+        on ? badgeClasses : "text-zinc-500 hover:text-zinc-300 bg-white/5 border border-white/5"
       }`}
     >
       {label}

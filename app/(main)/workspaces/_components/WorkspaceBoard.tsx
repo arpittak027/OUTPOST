@@ -135,7 +135,7 @@ export function WorkspaceBoard({ workspaces }: { workspaces: BoardWorkspace[] })
                                       variant="ghost"
                                       size="icon"
                                       aria-label="Workspace options"
-                                      className="absolute top-2 right-2 size-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100"
+                                      className="size-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 data-[state=open]:opacity-100 text-zinc-400 hover:text-white hover:bg-white/10 rounded-lg transition-all cursor-pointer"
                                     >
                                       <MoreHorizontal className="size-4" />
                                     </Button>

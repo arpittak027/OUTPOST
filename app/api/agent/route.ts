@@ -47,7 +47,7 @@ function sanitizeMessages(messages: UIMessage[]): UIMessage[] {
 
     // Skip empty assistant messages
     if (m.role === "assistant") {
-      const hasText = m.parts?.some((p) => p.type === "text" && (p as any).text?.trim());
+      const hasText = m.parts?.some((p) => p.type === "text" && (p as { text?: string }).text?.trim());
       const hasTools = m.parts?.some(
         (p) => p.type.startsWith("tool-") || p.type === "dynamic-tool"
       );
@@ -59,11 +59,11 @@ function sanitizeMessages(messages: UIMessage[]): UIMessage[] {
     if (prev && prev.role === "user" && m.role === "user") {
       const prevText = prev.parts
         .filter((p) => p.type === "text")
-        .map((p: any) => p.text)
+        .map((p) => (p as { text: string }).text)
         .join("\n");
       const currentText = m.parts
         .filter((p) => p.type === "text")
-        .map((p: any) => p.text)
+        .map((p) => (p as { text: string }).text)
         .join("\n");
       prev.parts = [{ type: "text", text: `${prevText}\n${currentText}` }];
       continue;

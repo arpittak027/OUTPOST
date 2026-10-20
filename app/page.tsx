@@ -162,11 +162,12 @@ export default function Home() {
           <h2 className="text-3xl font-semibold tracking-tight md:text-4xl">
             Give your workspace a collaborator
           </h2>
-          <Button asChild size="lg" className="gap-2 text-base">
-            <Link href="/sign-up">
-              Get started free <ArrowRight className="size-4" />
-            </Link>
-          </Button>
+          <Link
+            href="/sign-up"
+            className="inline-flex items-center justify-center gap-2 h-12 px-7 bg-[#f59e0b] hover:bg-[#ea580c] text-black font-semibold text-base rounded-xl shadow-xl shadow-amber-500/25 transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            Get started free <ArrowRight className="size-4 stroke-[2.5]" />
+          </Link>
         </div>
       </section>
 

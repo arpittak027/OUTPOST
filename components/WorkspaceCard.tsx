@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LayoutGrid } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import type { WorkspaceStatus } from "@/lib/generated/prisma/enums";
 import { statusTitle } from "@/lib/workspace-status";
@@ -46,7 +45,7 @@ export function WorkspaceCard({
         >
           {workspace.name}
         </Link>
-        {actions}
+        {actions && <div className="relative z-10 shrink-0">{actions}</div>}
       </div>
 
       {workspace.description && (
