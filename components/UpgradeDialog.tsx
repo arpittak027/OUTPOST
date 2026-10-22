@@ -1,8 +1,17 @@
 "use client";
 
 import { createContext, useContext, useState, type ReactNode } from "react";
+import dynamic from "next/dynamic";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { PricingPlans } from "@/components/PricingPlans";
+
+const PricingPlans = dynamic(
+  () => import("@/components/PricingPlans").then((m) => m.PricingPlans),
+  {
+    loading: () => (
+      <div className="mx-auto h-96 max-w-5xl animate-pulse rounded-2xl border border-white/8 bg-white/3" />
+    ),
+  }
+);
 
 type UpgradeReason = { title: string; description?: string };
 

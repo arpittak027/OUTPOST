@@ -3,7 +3,8 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { MapAnnotations } from "./_components/MapAnnotations";
-import { PricingPlans } from "@/components/PricingPlans";
+import { HeroVideo } from "@/components/HeroVideo";
+import { LazyPricingPlans } from "@/components/LazyPricingPlans";
 import { AUDIENCES, STEPS, SURFACES } from "./_data/landing";
 
 export default function Home() {
@@ -38,24 +39,9 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Product walkthrough. Muted + playsInline are required for autoplay on mobile; WebM is
-            smaller, with MP4 as the fallback for browsers without VP9. */}
+        {/* Product walkthrough. Poster loads with priority; video downloads only upon play */}
         <div className="survey-frame scroll-tilt mx-auto mt-16 max-w-5xl">
-          {/* A slightly narrower frame than the 16:9 video, so object-cover trims the sides. */}
-          <div className="aspect-16/9.25 overflow-hidden rounded-2xl border border-white/12 bg-[#101117] shadow-2xl shadow-black/80 ring-1 ring-white/10">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              poster="/videos/hero-poster.jpg"
-              aria-label="Outpost walkthrough: the agent draws an architecture diagram and writes the spec"
-              className="size-full object-cover"
-            >
-              <source src="/videos/hero.webm" type="video/webm" />
-              <source src="/videos/hero.mp4" type="video/mp4" />
-            </video>
-          </div>
+          <HeroVideo />
         </div>
       </section>
 
@@ -145,7 +131,7 @@ export default function Home() {
             Upgrade just yourself, or your whole team, billed per member.
           </p>
         </div>
-        <PricingPlans />
+        <LazyPricingPlans />
       </section>
 
       {/* Closing CTA, back over the map so the page opens and closes on it */}
